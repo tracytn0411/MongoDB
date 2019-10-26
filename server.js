@@ -1,12 +1,12 @@
 //Dependencies
 require('dotenv').config()
 var express = require('express');
-//var cors = require('cors');
+var cors = require('cors');
 var path = require('path');
 var PORT = process.env.PORT || 5000
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
-const mongoose = require('mongoose');
+const mongoose = require('mongoose'); 
 const Article = require('./models/article')
 
 //Dev for scraping
@@ -16,9 +16,11 @@ var cheerio = require("cheerio");
 // Initialize Express
 var app = express();
 
-app.use(express.static('public'));
+//app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+app.use(cors())
 app.use(methodOverride('_method'));
 
 // Connect to MongoDB Atlas, database is web_scraper
@@ -41,12 +43,17 @@ db.once("open", function () {
 //   res.sendFile(path.join(__dirname, 'client/public/index.html'))
 // })
 
-app.get("/", function(req, res) {
-  res.send("Hello world");
-});
+// app.get("/", function(req, res) {
+//   res.send("Hello world");
+// });
+
+// app.use(express.static(path.join(__dirname, 'build')));
+// app.get('/*', function(req, res) {
+//   res.sendFile(path.join(__dirname, 'build', 'index.html'));
+// });
 
 // Retrieve data from the db
-app.get("/all", function(req, res) {
+app.get("/api/articles", function(req, res) {
   // Find all results from the scrapedData collection in the db
   Article.find({}, function(error, doc) {
     // Throw any errors to the console
