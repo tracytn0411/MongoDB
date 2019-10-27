@@ -5,34 +5,42 @@ var ArticleSchema = new Schema({
 
   title: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
 
   link: {
     type: String,
-    required: true
+    required: true,
+    unique: true,
   },
 
-  // snippet: {
-  //   type: String,
-  // },
+  summary: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   
-  // note: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: "Note"
-  // },
+//   note: {
+//     type: Schema.Types.ObjectId,
+//     ref: "Note"
+//   },
 
-  // isSaved: {
-  //   type: Boolean,
-  //   default: false
-  // },
+//   isSaved: {
+//     type: Boolean,
+//     default: false
+//   },
 
-  // articleCreated: {
-  //   type: Date,
-  //   default: Date.now
-  // }
-});
+  date: {
+    type: String,
+    required: true,
+    unique: true
+    }
+},
 
+{versionKey: false});
+
+// new collection
 var Article = mongoose.model("Article", ArticleSchema);
 
 module.exports = Article;

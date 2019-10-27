@@ -3,8 +3,12 @@
   import ReactDOM from 'react-dom';
   import './index.css';
   import App from './App';
+  import Jumbo from './Jumbotron';
   import * as serviceWorker from './serviceWorker';
+
+
   
+  ReactDOM.render(<Jumbo />, document.getElementById('header'));
   ReactDOM.render(<App />, document.getElementById('root'));
   
   // If you want your app to work offline and load faster, you can change
