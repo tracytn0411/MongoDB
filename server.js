@@ -16,15 +16,22 @@ var cheerio = require("cheerio");
 // Initialize Express
 var app = express();
 
-//app.use(express.static('public'));
-app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(cors())
 app.use(methodOverride('_method'));
 
+//This tell express server where the frontend code is
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+// The "catchall" handler: for any request that doesn't match any
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname + '/client/build/index.html'));
+//   });
+
 // Connect to MongoDB Atlas, database is web_scraper
 var dbURI = process.env.MONGODB_ATLAS_CLUSTER0_URI;
+//var dbURI = 'mongodb://localhost:27017/web_scraper'
 mongoose.connect(dbURI, {
   useCreateIndex: true,
   useNewUrlParser: true, 
@@ -40,9 +47,10 @@ db.once("open", function () {
   console.log("Mongoose connection successfully.");
 });
 
-// app.get('/', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'client/public/index.html'))
-// })
+// Direct to homepage
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client/public/index.html'))
+})
 
 // app.get("/", function(req, res) {
 //   res.send("Hello world");

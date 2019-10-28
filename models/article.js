@@ -21,15 +21,15 @@ var ArticleSchema = new Schema({
     unique: true,
   },
   
-//   note: {
-//     type: Schema.Types.ObjectId,
-//     ref: "Note"
-//   },
+  comments: {
+    type: Schema.Types.ObjectId,
+    ref: "comment"
+  },
 
-//   isSaved: {
-//     type: Boolean,
-//     default: false
-//   },
+  isSaved: {
+    type: Boolean,
+    default: false
+  },
 
   date: {
     type: String,
