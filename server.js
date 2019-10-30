@@ -6,6 +6,7 @@ var path = require('path');
 var PORT = process.env.PORT || 5000
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
+var colors = require('colors')
 const mongoose = require('mongoose'); 
 const Article = require('./models/article')
 
@@ -35,6 +36,7 @@ var dbURI = process.env.MONGODB_ATLAS_CLUSTER0_URI;
 mongoose.connect(dbURI, {
   useCreateIndex: true,
   useNewUrlParser: true, 
+  useFindAndModify: false,
   useUnifiedTopology: true //to get rid of terminal deprecationwarning
 });
 var db = mongoose.connection;
@@ -64,7 +66,8 @@ app.get('/', (req, res) => {
 // Retrieve data from the db
 app.get("/api/articles", function(req, res) {
   // Find all results from the scrapedData collection in the db
-  Article.find({}, function(error, doc) {
+    //sort in descending order of date
+  Article.find({}).sort({articleDate:-1}).exec(function(error, doc) {
     // Throw any errors to the console
     if (error) {
       console.log(error);
@@ -76,28 +79,75 @@ app.get("/api/articles", function(req, res) {
   });
 });
 
+// Route to display data on Saved Articles page
+app.get("/api/savedArticles", function(req, res) {
+  Article.find({"isSaved": true},(function(error, articles) {
+    if (error) {
+      console.log(error)
+    } else {
+      //console.log(articles)
+      res.json(articles)
+    }
+  }))
+});
+
+// Route to update data when user hits 'save article' btn
+app.post('/api/savedArticles', function(req, res) {
+  Article.findOneAndUpdate({'_id': req.body.article_id},{'isSaved': true, 'btnStyle':'primary', 'btnText':'Saved!'}, (function(error, articles) {
+    if (error) {
+      console.log(error)
+    } else {
+      Article.findById(req.body.article_id, function(error, doc){
+        if (error) throw error
+        else {
+          console.log(colors.cyan('Saved this article' + doc))
+          res.json(doc)
+        }
+      })
+    }
+  }))
+})
+
+// Route to update data when user hits 'saved!' (to unsave)
+app.post('/api/unsavedArticles', function(req, res) {
+  Article.findOneAndUpdate({'_id': req.body.article_id},{'isSaved': false, 'btnStyle': 'secondary', 'btnText': 'Save Article'}, function(error,articles){
+    if (error) {
+      console.log(error)
+    } else {
+      Article.findById(req.body.article_id, function(error, doc){
+        if (error) throw error
+
+        else {
+          console.log(colors.yellow('Unsave this article' + doc))
+          res.json(doc)
+        }
+      })
+    }
+  })
+})
+
 // Scrape data from one site and place it into the mongodb db
-app.get("/scrape", function(req, res) {
-  // Make a request via axios for the news section of `ycombinator`
+app.get("/api/scrape", function(req, res) {
+  // Make a request via axios for the news section
   axios.get("https://www.smashingmagazine.com/articles/").then(function(response) {
 
     //console.log(response.data);
     
-    // Load the html body from axios into cheerio
     // Load the Response into cheerio and save it to a variable
       // '$' becomes a shorthand for cheerio's selector commands, much like jQuery's '$'
     var $ = cheerio.load(response.data);
 
-    // For each element with a "title" class
+    // For each 'article' element with class 'article-post'
       // (i: iterator. element: the current element)
     $("article.article--post").each(function(i, element) {
       // Save the text and href of each link enclosed in the current element
       //console.log($(element).html());
 
       var results = {};
-      
       results.title = $(element).children("h1").text();
       results.date = $(element).children('div').children('p').children('time').text();
+      results.articleDate = $(element).children('div').children('p').children('time').attr('datetime');
+
       var articleLink = $(element).children("h1").children('a').attr("href");
       results.link = 'https://www.smashingmagazine.com' + articleLink;
       
@@ -106,9 +156,9 @@ app.get("/scrape", function(req, res) {
       $(element).children('div').children('p').children('a').remove();
       var articleSum = $(element).children('div').children('p').text();
       results.summary = articleSum;
-
       //console.log(summary)
-      var entry = new Article(results) //new document
+
+      var entry = new Article(results) //new document for each scraped article
 
       entry.save(function(err, doc){
         if(err) {
@@ -119,6 +169,7 @@ app.get("/scrape", function(req, res) {
       })
     });
   });
+
   // Send a message to the browser
   res.send("Scrape Complete");
 });

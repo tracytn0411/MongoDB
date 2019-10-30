@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
 //import {Card, Container, Row, Col, Button} from 'react-bootstrap';
-import NavbarPage from './NavBar'
+import {BrowserRouter, Route, Link, Switch} from 'react-router-dom';
 
+import {
+  Navbar,
+  Nav
+} from "react-bootstrap";
+import {FaGithub} from 'react-icons/fa'
+
+//import NavbarPage from './NavBar'
 import Jumbo from './Jumbo';
 import Articles from './Articles'
+import SavedArticle from './SavedArticle';
 
 
 //var axios = require("axios");
@@ -19,88 +27,69 @@ class App extends Component {
 export default App;
 */
 
-
 class App extends Component {
-  render (){
-    return (
-        <div>
-          <NavbarPage />
-          <Jumbo />
-          <Articles />
-        </div>
-      
-    )
-  }
+  state = {
+    isOpen: false
+  };
 
+  toggleCollapse = () => {
+    this.setState({ isOpen: !this.state.isOpen });
+  };
+
+  render() {
+    return (
+      <BrowserRouter>
+        <Navbar bg="light" expand="lg">
+          <Navbar.Brand href="/">News Scraper</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mr-auto">
+              <Nav.Item className='px-2'>
+                <Link to="/">Home</Link>
+              </Nav.Item>
+              <Nav.Item className='px-2'>
+                <Link to="/saved">Saved Articles</Link>
+              </Nav.Item>
+            </Nav>
+              <a href="https://github.com/tracytn0411/mongodb-web-scraper" role="button">
+                <FaGithub />
+              </a>
+           
+           
+          </Navbar.Collapse>
+        </Navbar>
+
+        <Jumbo />
+
+        <Switch>
+          <Route exact path="/" component={Articles} />
+          <Route path="/saved" component={SavedArticle} />
+        </Switch>
+      </BrowserRouter>
+    );
+  }
 }
 
+
+
 // class App extends Component {
-//   // state = {
-//   //   articles: []
-//   // }
-
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       articles: []
-//     }
-//   }
-
-//   componentDidMount() {
-//     // Axios /GET requests go here, when we want data ASAP!
-//     axios.get(`/api/articles`)
-//       .then(res => {
-//         var articles = res.data.map(obj => ({
-//           title: obj.title,
-//           link: obj.link,
-//           summary: obj.summary,
-//           date: obj.date
-//         }));
-//         console.log(articles)
-//         this.setState({
-//           articles
-//         })
-//       })
-//       .catch(err => console.log(err))
-//   }
-
-//   // .then(res => {
-//   //   const posts = res.data.results.map(obj => ({title: obj.title, overview: obj.overview}));
-//   //   this.setState({ posts });
-//   // });
-  
-//   render() {
+//   render (){
 //     return (
-//       <Container fluid>
-//         <Row>
-//           {this.state.articles.map(function(article, index){
-//             return (
-//               <Col md={6} lg={4} key={index}>
-//                 <Card>
-//                   <Card.Body>
-//                     <Card.Title >{article.title}</Card.Title>
-//                     <Card.Text>
-//                       <span>
-//                         {article.date}
-//                       </span>
-//                       {article.summary}
-//                     </Card.Text>
-                  
-//                     <Card.Link href={article.link} target='_blank'>Read more...</Card.Link>
-
-//                   </Card.Body>
-//                   <Card.Footer className='text-right'>
-//                     <Button variant='info'>Comment</Button>
-//                     <Button variant='secondary'>Save</Button>
-//                   </Card.Footer>
-//                 </Card>
-//               </Col>
-//             )}
-//           )}
-//         </Row>
-//       </Container>
-//     )}
+//         <div>
+//           <NavbarPage />
+//           <Jumbo />
+//           <SavedArticle />
+//           <Articles />
+//         </div>
+      
+//     )
 //   }
+
+// }
+
+
+  
+
 
 export default App;
 

@@ -31,11 +31,31 @@ var ArticleSchema = new Schema({
     default: false
   },
 
+  btnStyle: {
+    type: String,
+    default: 'secondary'
+  },
+
+  btnText: {
+    type: String,
+    default: 'Save Article'
+  },
+
   date: {
     type: String,
     required: true,
     unique: true
-    }
+    },
+  
+  articleDate: {
+    type: Date,
+    unique: false
+  },
+
+  timestamp: {
+    type: Date,
+    default: Date.now
+  }
 },
 
 {versionKey: false});
