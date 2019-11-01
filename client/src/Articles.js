@@ -13,22 +13,12 @@ class Articles extends Component {
       //isSaved: false,
       //clickedBtn: [],
       articles: [],
-      backgroundColors: {}
+      //backgroundColors: {}
     };
     // This binding is necessary to make `this` work in the callback
    // this.handleClick = this.handleClick.bind(this);
   }
 
-  // handleClick = article => {
-  //   this.setState(prevState => ({
-  //     backgroundColors: {
-  //       ...prevState.backgroundColors,
-  //       [article]: "blue"
-  //     }
-  //   }));
-  // };
-
-  
   handleDelete = itemId => {
     const articles = this.state.articles.filter(article => article.id !== itemId);
     this.setState({ articles: articles });

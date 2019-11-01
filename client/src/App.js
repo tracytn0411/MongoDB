@@ -4,14 +4,15 @@ import {BrowserRouter, Route, Link, Switch} from 'react-router-dom';
 
 import {
   Navbar,
-  Nav
+  Nav,
+  Button
 } from "react-bootstrap";
 import {FaGithub} from 'react-icons/fa'
 
 //import NavbarPage from './NavBar'
 import Jumbo from './Jumbo';
 import Articles from './Articles'
-import SavedArticle from './SavedArticle';
+import SavedArticles from './SavedArticles';
 
 
 //var axios = require("axios");
@@ -50,6 +51,10 @@ class App extends Component {
               <Nav.Item className='px-2'>
                 <Link to="/saved">Saved Articles</Link>
               </Nav.Item>
+              {/* <Nav.Item className='px-2'>
+                <Button href='/api/scrape'> Scrape latest news!
+                </Button>
+              </Nav.Item> */}
               
             </Nav>
               <a href="https://github.com/tracytn0411/mongodb-web-scraper" role="button">
@@ -64,7 +69,7 @@ class App extends Component {
 
         <Switch>
           <Route exact path="/" component={Articles} />
-          <Route path="/saved" component={SavedArticle} />
+          <Route path="/saved" component={SavedArticles} />
         </Switch>
       </BrowserRouter>
     );

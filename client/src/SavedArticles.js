@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Card, Container, Row, Col, Button} from 'react-bootstrap';
+import SavedBtn from './SavedBtn';
 var axios = require ('axios');
 
 class SavedArticle extends Component {
@@ -14,6 +15,9 @@ class SavedArticle extends Component {
     this.getSavedArticles();
   }
 
+  handleClick() {
+    this.getSavedArticles();
+  }
   getSavedArticles(){
     axios.get(`/api/savedArticles`)
       .then (res => {
@@ -28,12 +32,12 @@ class SavedArticle extends Component {
   render() { //render() is a method that returns HTML
     return (
       <Container fluid>
-        <Row>
+        <Row className='mx-4'>
           {/* Have to use arrow function or the map method won't bind */}
           {this.state.savedArticles.map(((article,index) => { 
             return (
               <Col md={6} lg={4} key={index}>
-                <Card>
+                <Card className='mb-2'>
                   <Card.Body>
                     <Card.Title >{article.title}</Card.Title>
                     <Card.Text>
@@ -47,6 +51,12 @@ class SavedArticle extends Component {
                     {/* <Button variant='secondary' onClick={this.handleClick}>Save</Button> */}
                     {/* <Button value={article._id} onClick={this.handleClick}>Save Article       
                     </Button>          */}
+                    <SavedBtn 
+                    data_article = {article}
+                    key={article._id}
+                    value={article._id}
+                    onClick={this.handleClick}
+                    />
                   </Card.Footer>
                 </Card>
               </Col>

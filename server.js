@@ -1,5 +1,6 @@
 //Dependencies
 require('dotenv').config()
+var newrelic = require('newrelic');
 var express = require('express');
 //var cors = require('cors');
 var path = require('path');
@@ -16,6 +17,8 @@ var cheerio = require("cheerio");
 
 // Initialize Express
 var app = express();
+// In Express, this lets you call newrelic from within a template.
+app.locals.newrelic = newrelic;
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -175,7 +178,9 @@ app.get("/api/scrape", function(req, res) {
   });
 
   // Send a message to the browser
-  res.send("Scrape Complete");
+  //res.send("Scrape Complete");
+  //Reload homepage
+  res.redirect('/')
 });
 
 app.listen(PORT, () => console.log(`LISTENING ON PORT ${PORT}`));
