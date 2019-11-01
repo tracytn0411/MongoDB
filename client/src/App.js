@@ -50,6 +50,7 @@ class App extends Component {
               <Nav.Item className='px-2'>
                 <Link to="/saved">Saved Articles</Link>
               </Nav.Item>
+              
             </Nav>
               <a href="https://github.com/tracytn0411/mongodb-web-scraper" role="button">
                 <FaGithub />

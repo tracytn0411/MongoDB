@@ -1,7 +1,7 @@
 //Dependencies
 require('dotenv').config()
 var express = require('express');
-var cors = require('cors');
+//var cors = require('cors');
 var path = require('path');
 var PORT = process.env.PORT || 5000
 var bodyParser = require('body-parser');
@@ -19,12 +19,20 @@ var app = express();
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
-app.use(cors())
+//app.use(cors())
 app.use(methodOverride('_method'));
 
 //This tell express server where the frontend code is
 app.use(express.static(path.join(__dirname, 'client/build')));
 
+// Express only serves static assets in production
+// if (process.env.NODE_ENV === "production") {
+//   app.use(express.static("client/build"));
+//}
+// Direct to homepage
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client/build', 'index.html'))
+})
 // The "catchall" handler: for any request that doesn't match any
 // app.get('*', (req, res) => {
 //   res.sendFile(path.join(__dirname + '/client/build/index.html'));
@@ -43,16 +51,12 @@ var db = mongoose.connection;
 
 // Checks if connection with the database is successful
 db.on("error", function(error) {
-  console.log("Database Error:", error);
+  console.log(colors.red("Database Error:", error));
 });
 db.once("open", function () {
   console.log("Mongoose connection successfully.");
 });
 
-// Direct to homepage
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/public/index.html'))
-})
 
 // app.get("/", function(req, res) {
 //   res.send("Hello world");
