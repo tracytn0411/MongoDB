@@ -75,44 +75,6 @@ class SavedBtn extends Component {
     );
   }
  
-  // articleValue() {
-  //   let { articleID } = this.state
-  //   return articleID;
-  // }
-  // btnColor() {
-  //   let btnClass = 'btn text-white btn-' + this.state.color
-  //   //btnClass += !this.state.isSaved ? 'secondary' : 'primary';
-  //   return btnClass;
-  // }
-  // styleCardHeader() {
-  //   let classes = "text-white bg-";
-  //   classes += this.state.count === 0 ? "warning" : "primary";
-  //   return classes;
-  // }
- 
-  // btnText() {
-  //   const { text } = this.state;
-  //   return text;
-  // }
-  // constructor(props){
-  //     super(props);
-  //     this.state = {
-  //         person: this.props.person
-  //     }
-  // }
-  
-  // buttonActiveHandler = () => {
-  //     let oldStatus = this.props.person.status;
-  //     this.props.person.status = (!oldStatus ? 'active': '');
-  //     this.setState({
-  //         person:this.props.person
-  //     });
-  // }
-  // render() {
-  //     return (
-  //         <button className={this.state.person.status} onClick={this.buttonActiveHandler}>{this.state.person.name}</button>
-  //     );
-  // }
   }
   export default SavedBtn;
 

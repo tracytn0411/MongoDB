@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import {Card, Container, Row, Col, Button} from 'react-bootstrap';
+import {Card, Container, Row, Col} from 'react-bootstrap';
 import SavedBtn from './SavedBtn';
+import CollapseBtn from './CollapseBtn';
 var axios = require ('axios');
 
 class SavedArticle extends Component {
@@ -47,7 +48,6 @@ class SavedArticle extends Component {
                     <Card.Link href={article.link} target='_blank'>Read more...</Card.Link>
                   </Card.Body>
                   <Card.Footer className='text-right'>
-                    <Button variant='info'>Comment</Button>
                     {/* <Button variant='secondary' onClick={this.handleClick}>Save</Button> */}
                     {/* <Button value={article._id} onClick={this.handleClick}>Save Article       
                     </Button>          */}
@@ -57,6 +57,7 @@ class SavedArticle extends Component {
                     value={article._id}
                     onClick={this.handleClick}
                     />
+                    <CollapseBtn />
                   </Card.Footer>
                 </Card>
               </Col>

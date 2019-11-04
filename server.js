@@ -1,15 +1,18 @@
 //Dependencies
 require('dotenv').config()
-var newrelic = require('newrelic');
 var express = require('express');
+
 //var cors = require('cors');
 var path = require('path');
 var PORT = process.env.PORT || 5000
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
-var colors = require('colors')
+var colors = require('colors');
+
+//MongoDB
 const mongoose = require('mongoose'); 
-const Article = require('./models/article')
+const Article = require('./models/article');
+const Comment = require('./models/comment')
 
 //Dev for scraping
 var axios = require("axios");
@@ -17,8 +20,11 @@ var cheerio = require("cheerio");
 
 // Initialize Express
 var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io')(server); //pass server to socket.io
+
 // In Express, this lets you call newrelic from within a template.
-app.locals.newrelic = newrelic;
+//app.locals.newrelic = newrelic;
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -28,22 +34,15 @@ app.use(methodOverride('_method'));
 //This tell express server where the frontend code is
 app.use(express.static(path.join(__dirname, 'client/build')));
 
-// Express only serves static assets in production
-// if (process.env.NODE_ENV === "production") {
-//   app.use(express.static("client/build"));
-//}
 // Direct to homepage
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'client/build', 'index.html'))
 })
-// The "catchall" handler: for any request that doesn't match any
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname + '/client/build/index.html'));
-//   });
 
 // Connect to MongoDB Atlas, database is web_scraper
 var dbURI = process.env.MONGODB_ATLAS_CLUSTER0_URI;
-//var dbURI = 'mongodb://localhost:27017/web_scraper'
+
+// var dbURI = 'mongodb://localhost:27017/web_scraper'
 mongoose.connect(dbURI, {
   useCreateIndex: true,
   useNewUrlParser: true, 
@@ -51,6 +50,7 @@ mongoose.connect(dbURI, {
   useUnifiedTopology: true //to get rid of terminal deprecationwarning
 });
 var db = mongoose.connection;
+
 
 // Checks if connection with the database is successful
 db.on("error", function(error) {
@@ -81,6 +81,7 @@ app.get("/api/articles", function(req, res) {
     }
     // If there are no errors, send the data to the browser as json
     else {
+      //console.log(doc)
       res.json(doc);
     }
   });
@@ -88,14 +89,14 @@ app.get("/api/articles", function(req, res) {
 
 // Route to display data on Saved Articles page
 app.get("/api/savedArticles", function(req, res) {
-  Article.find({"isSaved": true},(function(error, articles) {
+  Article.find({"isSaved": true}).exec(function(error, articles) {
     if (error) {
       console.log(error)
     } else {
       //console.log(articles)
       res.json(articles)
     }
-  }))
+  })
 });
 
 // Route to update data when user hits 'save article' btn
@@ -105,7 +106,9 @@ app.post('/api/savedArticles', function(req, res) {
       console.log(error)
     } else {
       Article.findById(req.body.article_id, function(error, doc){
-        if (error) throw error
+        if (error) {
+          console.log('savedARticles error is: '.magenta + error.red)
+        }
         else {
           console.log(colors.cyan('Saved this article' + doc))
           res.json(doc)
@@ -122,8 +125,9 @@ app.post('/api/unsavedArticles', function(req, res) {
       console.log(error)
     } else {
       Article.findById(req.body.article_id, function(error, doc){
-        if (error) throw error
-
+        if (error) {
+          console.log('unsavedARticles error is: '.magenta + error.red)
+        }
         else {
           console.log(colors.yellow('Unsave this article' + doc))
           res.json(doc)
@@ -133,6 +137,44 @@ app.post('/api/unsavedArticles', function(req, res) {
   })
 })
 
+io.on("connection", (socket) => {
+  console.log("Socket is connected...")
+
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+})
+
+//old way
+app.get('/api/getComments/:id', function(req, res) {
+  Comment.find({'article':req.params.id}).exec(function(error, comments){
+    if (error) {
+      console.log(error)
+    } else {
+      console.log(colors.green('getComments:' + comments))
+      res.json(comments)
+    }
+  })
+})
+
+
+app.post("/api/addComment", function(req, res) {
+  var newComment = {};
+  newComment.sender = req.body.comment_author;
+  newComment.content = req.body.comment_text;
+  newComment.article = req.body.article_id;
+
+  var comment = new Comment(newComment);
+  console.log(comment);
+  comment.save(function(error, comment) {
+    if (error) {
+      console.log(error);
+    } else {
+      res.json(comment);
+    }
+  });
+});
+  
 // Scrape data from one site and place it into the mongodb db
 app.get("/api/scrape", function(req, res) {
   // Make a request via axios for the news section
@@ -151,6 +193,7 @@ app.get("/api/scrape", function(req, res) {
       //console.log($(element).html());
 
       var results = {};
+      results._id = new mongoose.Types.ObjectId();
       results.title = $(element).children("h1").text();
       results.date = $(element).children('div').children('p').children('time').text();
       results.articleDate = $(element).children('div').children('p').children('time').attr('datetime');
@@ -183,4 +226,9 @@ app.get("/api/scrape", function(req, res) {
   res.redirect('/')
 });
 
-app.listen(PORT, () => console.log(`LISTENING ON PORT ${PORT}`));
+server.listen(PORT, () => console.log(`LISTENING ON PORT ${PORT}`));
+//app.listen(PORT, () => console.log(`LISTENING ON PORT ${PORT}`));
+
+
+
+

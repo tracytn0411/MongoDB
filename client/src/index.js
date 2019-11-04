@@ -1,8 +1,8 @@
 
   import React from 'react';
   import ReactDOM from 'react-dom';
-  import './index.css';
-  import App from './App';
+  import './components/App/index.css';
+  import App from './components/App/App';
   //import Jumbo from './Jumbo';
   //import NavbarPage from './NavBar'
   import * as serviceWorker from './serviceWorker';

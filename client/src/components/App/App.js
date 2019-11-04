@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-//import {Card, Container, Row, Col, Button} from 'react-bootstrap';
+//import {Button, Navbar, Nav} from 'react-bootstrap';
 import {BrowserRouter, Route, Link, Switch} from 'react-router-dom';
 
 import {
@@ -46,15 +46,15 @@ class App extends Component {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
               <Nav.Item className='px-2'>
-                <Link to="/">Home</Link>
+                <Link to="/" className='btn btn-light'>Home</Link>
               </Nav.Item>
-              <Nav.Item className='px-2'>
-                <Link to="/saved">Saved Articles</Link>
+              <Nav.Item>
+                <Link to="/saved" className='btn btn-light'>Saved Articles</Link>
               </Nav.Item>
-              {/* <Nav.Item className='px-2'>
-                <Button href='/api/scrape'> Scrape latest news!
+              <Nav.Item className='ml-4'>
+                <Button variant='info' href='/api/scrape'> Scrape latest news!
                 </Button>
-              </Nav.Item> */}
+              </Nav.Item>
               
             </Nav>
               <a href="https://github.com/tracytn0411/mongodb-web-scraper" role="button">

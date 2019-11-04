@@ -4,7 +4,7 @@ import React from "react";
 import {Jumbotron} from 'react-bootstrap';
 //import {Toast} from "react-bootstrap";
 import {Container} from 'react-bootstrap';
-import smashing from './smashing.png'
+import smashing from '../smashing.png'
 
 // eslint-disable-next-line react/prop-types
 // const ExampleToast = ({ children }) => {

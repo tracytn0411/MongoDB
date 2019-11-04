@@ -27,3 +27,4 @@ yarn-error.log*
 .vscode
 mongo-hw.txt
 .env
+newrelic_agent.log

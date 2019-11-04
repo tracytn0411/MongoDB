@@ -2,12 +2,21 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var CommentSchema = new Schema({
+  sender:{
+    type: String,
+    required: true
+  },
   content: {
-    type: String
+    type: String,
+    required: true
   },
   article: {
     type: Schema.Types.ObjectId,
     ref: "Article"
+  },  
+  timestamp: {
+    type: Date,
+    default: Date.now
   }
 },
 

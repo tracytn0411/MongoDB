@@ -2,6 +2,7 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 var ArticleSchema = new Schema({
+  _id: Schema.Types.ObjectId,
 
   title: {
     type: String,
@@ -21,10 +22,10 @@ var ArticleSchema = new Schema({
     unique: true,
   },
   
-  comments: {
-    type: Schema.Types.ObjectId,
-    ref: "comment"
-  },
+  // comments: [{
+  //   type: Schema.Types.ObjectId,
+  //   ref: "Comment"
+  // }],
 
   isSaved: {
     type: Boolean,

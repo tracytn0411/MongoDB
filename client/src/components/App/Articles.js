@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import {Card, Container, Row, Col, Button} from 'react-bootstrap';
+import {Card, Container, Row, Col} from 'react-bootstrap';
 import SavedBtn from './SavedBtn';
+import CollapseBtn from './CollapseBtn';
 var axios = require ('axios');
 
 
@@ -10,10 +11,7 @@ class Articles extends Component {
     super(props);
     this.state = {
       text: 'Save Article',
-      //isSaved: false,
-      //clickedBtn: [],
       articles: [],
-      //backgroundColors: {}
     };
     // This binding is necessary to make `this` work in the callback
    // this.handleClick = this.handleClick.bind(this);
@@ -23,55 +21,6 @@ class Articles extends Component {
     const articles = this.state.articles.filter(article => article.id !== itemId);
     this.setState({ articles: articles });
   };
-
-  // handleClick = (e) => {
-  //   this.setState({ getArticles});
-  // }
-  // handleClick = (e) => {
-  //   e.preventDefault();
-  //   var articleID = (e.target.value) //get value of the saved button
-  //   console.log(articleID)
-
-  //   if(!this.state.isSaved) {
-  //     this.setState((state, props) => {
-  //       return {
-  //         text: 'Saved!',
-  //         isSaved: true
-  //       }
-  //     })
-  //     axios.post(`/api/savedArticles`,{
-  //       article_id: articleID
-  //     })
-  //     .then(res => {
-  //       console.log('saved!')
-  //     })
-  //   } else {
-  //     this.setState((state, props) => {
-  //       return {
-  //         text: 'Save Article',
-  //         isSaved: false
-
-  //       }
-  //     })
-  //   }
-
-//   changeIsReply(clickedId) {
-//     this.setState(
-//     {isReply: !this.state.isReply, clickedComment: clickedId}
-// );}
-  //clickedid is article.key right?
-  // handleClick(clickedId) {
-  //   this.setState(
-  //     {isSaved: !this.state.isSaved, clickedBtn: clickedId}
-  //   )
-  // }
-
-    // this.setState(state => ({
-    //   isToggleOn: !state.isToggleOn
-    // }));
-    //const {id} = this.state
-    //this.setState({id: id})
-  //}
 
   componentDidMount() {
     this.getArticles();
@@ -111,23 +60,16 @@ class Articles extends Component {
                     <Card.Link href={article.link} target='_blank'>Read more...</Card.Link>
                   </Card.Body>
                   <Card.Footer className='text-right'>
-                    <Button variant='info'>Comment</Button>
-
+                    {/* <Button variant='info'>Comment</Button> */}
                     <SavedBtn 
                     data_article = {article}
-                    //data_isSaved={article.isSaved}
-                    //data_btn={article.btnStyle}
-                    //data_text={article.btnText}
                     key={article._id}
                     value={article._id}
                     //onClick={this.handleClick}
                       //onDelete={this.handleDelete} 
-                      id = {article._id}
+                    id = {article._id}
                     />
-                    {/* <Button key={article.key} value={article._id} style={{ backgroundColor: backgroundColors[article] || "pink" }} onClick = {() => this.handleClick(article.key)}>
-                    </Button>   */}
-                    {/* {this.state.isSaved && this.state.clickedBtn == {article.key} ? 'ON' : 'OFF'}       */}
-                           
+                    <CollapseBtn dataOne={article._id} />
                   </Card.Footer>
                 </Card>
               </Col>
