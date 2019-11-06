@@ -1,110 +1,64 @@
 import React, { Component } from "react";
-//import socketIOClient from "socket.io-client";
 import {Container} from 'react-bootstrap';
-import Axios from "axios";
+import axios from "axios";
 import CommentList from './CommentList';
 import CommentForm from './CommentForm';
+//import openSocket from 'socket.io-client'
+//const socket = openSocket('http://127.0.0.1:5000')
 
 class CommentBox extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      //articleID: this.props.dataTwo,
-      response: false,
-      endpoint: "http://127.0.0.1:5000",
-      //addComment: '',
-      comments: [],
+      comments: []
     };
-  }
-  componentDidMount() {
-    // this.submitComment()
-    this.getComments();
-    // const { endpoint } = this.state;
-    // const socket = socketIOClient(endpoint);
-    // socket.on("/api/addComment", data => this.setState({ response: data }));
+    //this.submitComment = this.submitComment.bind(this);
   }
 
-  getComments(){
-    var articleID = this.props.dataTwo
-    console.log(articleID)
-    Axios.get(`/api/getComments/` + articleID)
+  componentDidMount() {
+    this.getComments();
+  }
+
+  //Get comments from MongoDB with specific article ID
+  getComments() {
+    var articleID = this.props.dataTwo;
+    //console.log(articleID);
+    axios.get(`/api/getComments/` + articleID)
       .then(res => {
-        console.log(res.data)
+        //console.log(res.data);
         this.setState({
           comments: res.data
-        })
+        });
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err));
   }
 
-  // submitComment(childData){
-  //   console.log(childData)
-  //   this.setState({
-  //     comments: childData
-  //   })
+  //Props passed from CommentForm (child) to update state temporarily
+    //The purpose is to display the new comment in CommentList w/o app refresh
+  handleCommentSubmit(newComment) {
+    let comments = this.state.comments;
+    let newComments = comments.concat([newComment]);
+    this.setState({comments : newComments});
+  }
 
+  // submitComment(comment){
+  //   console.log(comment)
+  //   socket.emit('newComment', function (err) {
+  //     if (err)
+  //         return console.error('New comment error:', err);
+  // });
   // }
 
   render() {
     return (
-    <Container className='commentBox mt-4'>
-      <CommentList data_comments={this.state.comments} />
-      <CommentForm dataThree={this.props.dataTwo} submitComment={this.submitComment} />
-      {/* <ListGroup>
-
-      </ListGroup>
-      <Form inline>
-        <FormControl type="text" onChange={this.handleNewComment} placeholder="Comment..." className=" mr-sm-2" />
-        <Button type="submit">Post</Button>
-      </Form> */}
-    </Container>
-
-    )
+      <Container className="commentBox mt-4">
+        <CommentList dataThree={this.props.dataTwo} data_comments={this.state.comments} />
+        <CommentForm onCommentSubmit={this.handleCommentSubmit.bind(this)}
+          dataThree={this.props.dataTwo}
+        />
+      </Container>
+    );
   }
-  // render() {
-  //   const { response } = this.state;
-  //   return (
-  //       <div style={{ textAlign: "center" }}>
-  //         {response
-  //             ? <p>
-  //               The temperature in Florence is: {response} °F
-  //             </p>
-  //             : <p>Loading...</p>}
-  //       </div>
-  //   );
-  // }
 }
-
-// var CommentBox = React.createClass({
-//   getInitialState: function () {
-//       return {
-//           comments: null
-//       };
-//   },
-//   componentDidMount: function () {
-//       var that = this;
-//       this.socket = io();
-//       this.socket.on('comments', function (comments) {
-//           that.setState({ comments: comments });
-//       });
-//       this.socket.emit('fetchComments');
-//   },
-//   submitComment: function (comment, callback) {
-//       this.socket.emit('newComment', comment, function (err) {
-//           if (err)
-//               return console.error('New comment error:', err);
-//           callback();
-//       });
-//   },
-//   render: function() {
-//       return (
-//           <div className="commentBox">
-//               <h3>Comments:</h3>
-//               <CommentList comments={this.state.comments}/>
-//               <CommentForm submitComment={this.submitComment}/>
-//           </div>
-//       );
-//   }
-// });
 
 export default CommentBox;

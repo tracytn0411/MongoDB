@@ -4,9 +4,7 @@ import SavedBtn from './SavedBtn';
 import CollapseBtn from './CollapseBtn';
 var axios = require ('axios');
 
-
 class Articles extends Component {
-  
   constructor(props) {
     super(props);
     this.state = {
@@ -39,10 +37,6 @@ class Articles extends Component {
   }
 
   render() { //render() is a method that returns HTML
-    //const {articleID} = this.state
-    //const {articles, backgroundColors } = this.state;
-
-
     return (
       <Container fluid>
         <Row className='mx-4'>
@@ -78,8 +72,6 @@ class Articles extends Component {
         </Row>
       </Container>
     )}
-
-
 
 }
 

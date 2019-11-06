@@ -1,8 +1,7 @@
 //Dependencies
 require('dotenv').config()
 var express = require('express');
-
-//var cors = require('cors');
+var cors = require('cors');
 var path = require('path');
 var PORT = process.env.PORT || 5000
 var bodyParser = require('body-parser');
@@ -20,15 +19,16 @@ var cheerio = require("cheerio");
 
 // Initialize Express
 var app = express();
-var server = require('http').createServer(app);
-var io = require('socket.io')(server); //pass server to socket.io
+//var server = require('http').createServer(app);
+//var io = require('socket.io')(server); //pass server to socket.io
+//require('events').defaultMaxListeners = 500
 
 // In Express, this lets you call newrelic from within a template.
 //app.locals.newrelic = newrelic;
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
-//app.use(cors())
+app.use(cors())
 app.use(methodOverride('_method'));
 
 //This tell express server where the frontend code is
@@ -59,16 +59,6 @@ db.on("error", function(error) {
 db.once("open", function () {
   console.log("Mongoose connection successfully.");
 });
-
-
-// app.get("/", function(req, res) {
-//   res.send("Hello world");
-// });
-
-// app.use(express.static(path.join(__dirname, 'build')));
-// app.get('/*', function(req, res) {
-//   res.sendFile(path.join(__dirname, 'build', 'index.html'));
-// });
 
 // Retrieve data from the db
 app.get("/api/articles", function(req, res) {
@@ -137,26 +127,31 @@ app.post('/api/unsavedArticles', function(req, res) {
   })
 })
 
-io.on("connection", (socket) => {
-  console.log("Socket is connected...")
 
-  socket.on('disconnect', function(){
-    console.log('user disconnected');
-  });
-})
-
-//old way
+//==============COMMENTS================//
 app.get('/api/getComments/:id', function(req, res) {
   Comment.find({'article':req.params.id}).exec(function(error, comments){
     if (error) {
       console.log(error)
     } else {
-      console.log(colors.green('getComments:' + comments))
+      //console.log(colors.green('getComments:' + comments))
       res.json(comments)
     }
   })
 })
 
+//Trial test with socket.io
+// io.on("connection", (socket) => {
+//   console.log("User is connected...")
+
+//   socket.on('fromForm', function (data) {
+//     console.log(colors.magenta(data));
+//     //io.emit('fromServer', {data})
+//   });
+//   socket.on('disconnect', function(){
+//     console.log('user disconnected');
+//   });
+// })
 
 app.post("/api/addComment", function(req, res) {
   var newComment = {};
@@ -165,7 +160,7 @@ app.post("/api/addComment", function(req, res) {
   newComment.article = req.body.article_id;
 
   var comment = new Comment(newComment);
-  console.log(comment);
+  console.log(colors.cyan('New comment added: ' + comment));
   comment.save(function(error, comment) {
     if (error) {
       console.log(error);
@@ -175,19 +170,19 @@ app.post("/api/addComment", function(req, res) {
   });
 });
   
+
+//==============SCRAPE===================//
 // Scrape data from one site and place it into the mongodb db
 app.get("/api/scrape", function(req, res) {
   // Make a request via axios for the news section
   axios.get("https://www.smashingmagazine.com/articles/").then(function(response) {
-
-    //console.log(response.data);
     
     // Load the Response into cheerio and save it to a variable
       // '$' becomes a shorthand for cheerio's selector commands, much like jQuery's '$'
     var $ = cheerio.load(response.data);
 
     // For each 'article' element with class 'article-post'
-      // (i: iterator. element: the current element)
+      // (i: iterator, element: the current element)
     $("article.article--post").each(function(i, element) {
       // Save the text and href of each link enclosed in the current element
       //console.log($(element).html());
@@ -226,9 +221,7 @@ app.get("/api/scrape", function(req, res) {
   res.redirect('/')
 });
 
-server.listen(PORT, () => console.log(`LISTENING ON PORT ${PORT}`));
-//app.listen(PORT, () => console.log(`LISTENING ON PORT ${PORT}`));
-
-
+//server.listen(PORT, () => console.log(`LISTENING ON PORT ${PORT}`));
+app.listen(PORT, () => console.log(`LISTENING ON PORT ${PORT}`));
 
 

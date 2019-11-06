@@ -57,7 +57,7 @@ class SavedArticle extends Component {
                     value={article._id}
                     onClick={this.handleClick}
                     />
-                    <CollapseBtn />
+                    <CollapseBtn dataOne={article._id}/>
                   </Card.Footer>
                 </Card>
               </Col>
