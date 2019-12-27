@@ -18,7 +18,6 @@ class SavedBtn extends Component {
   
   //function to toggle 'Save Article' btn
   handleSave = (articleData) => {
-    //e.preventDefault();
     var newsID = this.state.articleData._id
     console.log(newsID);
 

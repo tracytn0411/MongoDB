@@ -4,7 +4,7 @@ import React from "react";
 import {Jumbotron} from 'react-bootstrap';
 //import {Toast} from "react-bootstrap";
 import {Container} from 'react-bootstrap';
-import smashing from '../smashing.png'
+import smashing from '../Images/smashing.png'
 
 // eslint-disable-next-line react/prop-types
 // const ExampleToast = ({ children }) => {
@@ -26,7 +26,7 @@ const Jumbo = () => (
       <h1 className="header">Welcome To News Scraper</h1>
       <p className='lead'>Get the lastest news from
       
-      <img className='p-2' src={smashing} alt='magazine-logo'></img>
+      <img className='p-2' src={smashing} alt='magazine-logo' />
       </p>
       {/* <ExampleToast className="toast">
         We now have Toasts

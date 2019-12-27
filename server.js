@@ -40,9 +40,9 @@ app.get('/', (req, res) => {
 })
 
 // Connect to MongoDB Atlas, database is web_scraper
-var dbURI = process.env.MONGODB_ATLAS_CLUSTER0_URI;
+//var dbURI = process.env.MONGODB_ATLAS_CLUSTER0_URI;
 
-// var dbURI = 'mongodb://localhost:27017/web_scraper'
+var dbURI = 'mongodb://localhost:27017/web_scraper'
 mongoose.connect(dbURI, {
   useCreateIndex: true,
   useNewUrlParser: true, 
@@ -165,10 +165,20 @@ app.post("/api/addComment", function(req, res) {
     if (error) {
       console.log(error);
     } else {
+      //console.log(comment)
       res.json(comment);
     }
   });
 });
+
+app.delete('/api/delComment/:id', (req, res) => {
+  Comment.findByIdAndRemove({ _id: req.params.id}).exec((err, comment) => {
+    if (err) console.log(colors.red(`Delete comment error: ${err}`))
+    else {
+      console.log(colors.magenta(`Deleted comment: ${comment}`))
+    }
+  })
+})
   
 
 //==============SCRAPE===================//

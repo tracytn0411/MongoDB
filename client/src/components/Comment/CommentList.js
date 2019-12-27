@@ -1,5 +1,6 @@
 import React, { Component} from 'react';
 import {ListGroup} from 'react-bootstrap';
+import CommentDelete from './CommentDel'
 //import socketIOClient from 'socket.io-client';
 //import openSocket from 'socket.io-client'
 
@@ -8,17 +9,25 @@ class CommentList extends Component {
     super(props);
   }
 
+  deleteComment(commentID) {
+    this.props.onDeleteComment(commentID)
+  }
+
   render() {
     return (
       <ListGroup variant="flush" className="mb-3">
         {/* comments array passed from CommentBox as props*/}
-        {this.props.data_comments.map((comment, index) => {
+        {this.props.commentList.map((comment, index) => {
           return (
             <ListGroup.Item
               key={index}
-              className="d-flex justify-content-between align-items-center"
+              className="d-flex align-items-center"
             >
-              <span className="text-info">{comment.sender}</span>
+              <CommentDelete 
+                commentID={comment._id}
+                onDeleteComment={this.deleteComment.bind(this)}
+              />
+              <span className="text-info mr-auto">{comment.sender}</span>
               {comment.content}
             </ListGroup.Item>
           );

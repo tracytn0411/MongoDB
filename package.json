@@ -16,9 +16,6 @@
     "type": "git",
     "url": "https://github.com/tracytn0411/mongodb-web-scraper.git"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "author": "",
   "license": "ISC",
   "bugs": {
