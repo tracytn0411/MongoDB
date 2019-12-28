@@ -63,7 +63,7 @@ class Articles extends Component {
                       //onDelete={this.handleDelete} 
                     id = {article._id}
                     />
-                    <CollapseBtn dataOne={article._id} />
+                    <CollapseBtn articleID={article._id} />
                   </Card.Footer>
                 </Card>
               </Col>

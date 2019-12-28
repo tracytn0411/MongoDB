@@ -12,7 +12,8 @@ class CommentBox extends Component {
     this.state = {
       authorInput: "",
       commentInput: "",
-      comments: []
+      comments: [],
+      count: ''
     };
     //this.submitComment = this.submitComment.bind(this);
     this.handleAuthorChange = this.handleAuthorChange.bind(this);
@@ -27,14 +28,16 @@ class CommentBox extends Component {
 
   //Get comments from MongoDB with specific article ID
   getComments() {
-    var articleID = this.props.dataTwo;
+    var articleID = this.props.articleID;
     //console.log(articleID);
     axios
       .get(`/api/getComments/` + articleID)
       .then(res => {
-        //console.log(res.data);
+        console.log(res.data.count);
+        this.props.onCountComment(res.data.count)
         this.setState({
-          comments: res.data
+          comments: res.data.comments,
+          count: res.data.count
         });
       })
       .catch(err => console.log(err));
@@ -85,7 +88,7 @@ class CommentBox extends Component {
     return (
       <Container className="commentBox mt-4">
         <CommentList
-          dataThree={this.props.dataTwo}
+          articleID={this.props.articleID}
           commentList={this.state.comments}
           authorInput={this.state.authorInput}
           commentInput={this.state.commentInput}
@@ -97,7 +100,7 @@ class CommentBox extends Component {
           onCommentChange={this.handleCommentChange}
           authorInput={this.state.authorInput}
           commentInput={this.state.commentInput}
-          dataThree={this.props.dataTwo}
+          articleID={this.props.articleID}
         />
       </Container>
     );

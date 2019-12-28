@@ -15,7 +15,7 @@ class CommentDelete extends Component {
 
   render() {
     const commentID = this.props.commentID;
-    console.log(commentID);
+    //console.log(commentID);
     return (
       <Button
         variant="outline-light"

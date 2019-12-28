@@ -129,16 +129,30 @@ app.post('/api/unsavedArticles', function(req, res) {
 
 
 //==============COMMENTS================//
-app.get('/api/getComments/:id', function(req, res) {
+app.get('/api/getComments/:id', (req, res) => {
   Comment.find({'article':req.params.id}).exec(function(error, comments){
     if (error) {
-      console.log(error)
+      console.log(`get comments error: ${error}`.red)
     } else {
       //console.log(colors.green('getComments:' + comments))
-      res.json(comments)
+      Comment.countDocuments({'article': req.params.id}, (err, count) => {
+        if (err) console.log(colors.red(`count comments error: ${err}`))
+        else {
+          console.log(`Number of comments: ${count}`.green)
+          res.json({
+            comments: comments,
+            count: count
+          })
+        }
+      })
+      //res.json(comments)
     }
   })
 })
+
+// app.get('/api/countComments/:id', (req,res) => {
+//   Comment.countDocuments({ article: req.params.id})
+// })
 
 //Trial test with socket.io
 // io.on("connection", (socket) => {

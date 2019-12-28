@@ -35,7 +35,7 @@ class CommentForm extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    var articleID = this.props.dataThree; // id passed from CommentBox
+    var articleID = this.props.articleID; // id passed from CommentBox
     var newName = this.props.authorInput;
     var newComment = this.props.commentInput;
     console.log(`CommentForm: ${articleID} -> ${newName} : ${newComment}`);
