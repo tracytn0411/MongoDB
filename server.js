@@ -19,8 +19,10 @@ var cheerio = require("cheerio");
 
 // Initialize Express
 var app = express();
-//var server = require('http').createServer(app);
-//var io = require('socket.io')(server); //pass server to socket.io
+
+//Dev for socket.io
+var server = require('http').createServer(app);
+var io = require('socket.io')(server); //pass server to socket.io
 //require('events').defaultMaxListeners = 500
 
 // In Express, this lets you call newrelic from within a template.
@@ -40,9 +42,8 @@ app.get("/", (req, res) => {
 });
 
 // Connect to MongoDB Atlas, database is web_scraper
-//var dbURI = process.env.MONGODB_ATLAS_CLUSTER0_URI;
-
-var dbURI = "mongodb://localhost:27017/web_scraper";
+var dbURI = process.env.MONGODB_ATLAS_CLUSTER0_URI;
+//var dbURI = "mongodb://localhost:27017/web_scraper";
 mongoose.connect(dbURI, {
   useCreateIndex: true,
   useNewUrlParser: true,
@@ -58,6 +59,23 @@ db.on("error", function(error) {
 db.once("open", function() {
   console.log("Mongoose connection successfully.");
 });
+
+
+//==================SOCKET.IO=================//
+//Trial test with socket.io
+io.on("connection", (socket) => {
+  console.log("a user connected")
+
+  socket.on('fromForm', function (data) {
+    console.log(colors.magenta(data));
+    //io.emit('fromServer', {data})
+  });
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+})
+
+
 
 // Retrieve data from the db
 app.get("/api/articles", function(req, res) {
@@ -117,16 +135,27 @@ app.post("/api/unsavedArticles", function(req, res) {
   Article.findOneAndUpdate(
     { _id: req.body.article_id },
     { isSaved: false, btnStyle: "secondary", btnText: "Save Article" },
-    function(error, articles) {
+    function(error, doc) {
       if (error) {
         console.log(error);
       } else {
-        Article.findById(req.body.article_id, function(error, doc) {
-          if (error) {
-            console.log("unsavedARticles error is: ".magenta + error.red);
+        Article.find({ isSaved: true }, (err, savedArticles) => {
+          if (err) {
+            console.log(err);
           } else {
-            console.log(colors.yellow("Unsave this article" + doc));
-            res.json(doc);
+            Article.findById(req.body.article_id, (err2, unsavedArticle) => {
+              if (err2) console.log(err2);
+              else {
+                console.log(
+                  colors.yellow("Unsave this article" + unsavedArticle)
+                );
+                res.json({
+                  doc: doc,
+                  unsavedArticle: unsavedArticle,
+                  savedArticles: savedArticles
+                });
+              }
+            });
           }
         });
       }
@@ -154,19 +183,6 @@ app.get("/api/getComments/:id", (req, res) => {
     }
   });
 });
-
-//Trial test with socket.io
-// io.on("connection", (socket) => {
-//   console.log("User is connected...")
-
-//   socket.on('fromForm', function (data) {
-//     console.log(colors.magenta(data));
-//     //io.emit('fromServer', {data})
-//   });
-//   socket.on('disconnect', function(){
-//     console.log('user disconnected');
-//   });
-// })
 
 app.post("/api/addComment", function(req, res) {
   var newComment = {};

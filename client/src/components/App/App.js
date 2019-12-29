@@ -11,8 +11,8 @@ import {FaGithub} from 'react-icons/fa'
 
 //import NavbarPage from './NavBar'
 import Jumbo from './Jumbo';
-import Articles from './Articles'
-import SavedArticles from './SavedArticles';
+import ArticleList from './ArticleList'
+import SavedArticleList from './SavedArticlesList';
 
 
 //var axios = require("axios");
@@ -68,8 +68,8 @@ class App extends Component {
         <Jumbo />
 
         <Switch>
-          <Route exact path="/" component={Articles} />
-          <Route path="/saved" component={SavedArticles} />
+          <Route exact path="/" component={ArticleList} />
+          <Route path="/saved" component={SavedArticleList} />
         </Switch>
       </BrowserRouter>
     );

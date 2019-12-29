@@ -8,6 +8,7 @@ function CollapseBtn(props) {
   const [count, setCount] = useState("");
 
   const countComment = number => {
+    // eslint-disable-next-line
     if (!number == 0) {
       //only show if there's any comment
       setCount(number);
