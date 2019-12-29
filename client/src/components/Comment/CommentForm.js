@@ -7,30 +7,19 @@ import axios from "axios";
 class CommentForm extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      author: "",
-      comment: ""
-    };
-    //this.handleChange = this.handleChange.bind(this);
-    this.handleAuthorChange = this.handleAuthorChange.bind(this)
-    this.handleCommentChange = this.handleCommentChange.bind(this)
+    this.handleAuthorChange = this.handleAuthorChange.bind(this);
+    this.handleCommentChange = this.handleCommentChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleAuthorChange(event) {
-    //form attr 'name' is state object.key
-    //var name = event.target.name;
-    //form attr 'value is state object.value
     var author = event.target.value;
-    // this.setState({
-    //   [name]: value //object key:value
-    // });
-    this.props.onAuthorChange(author)
+    this.props.onAuthorChange(author);
   }
 
   handleCommentChange(event) {
     var comment = event.target.value;
-    this.props.onCommentChange(comment)
+    this.props.onCommentChange(comment);
   }
 
   handleSubmit(e) {
@@ -39,9 +28,6 @@ class CommentForm extends Component {
     var newName = this.props.authorInput;
     var newComment = this.props.commentInput;
     console.log(`CommentForm: ${articleID} -> ${newName} : ${newComment}`);
-
-    //this props will be passed uptree to CommentBox (child->parent)
-    //this.props.onCommentSubmit({ sender: newName, content: newComment });
 
     //Testing trial with socket.io
     //!Status: currently only work 1 way from client to server (CommentForm to server.js)
@@ -60,18 +46,20 @@ class CommentForm extends Component {
         comment_text: newComment
       })
       .then(res => {
-        var savedComment = res.data
+        var savedComment = res.data;
         console.log(`New comment added to Mongo: ${savedComment}`);
-        this.props.onCommentSubmit(res.data)
+        this.props.onCommentSubmit(res.data);
       })
-      .catch(err => console.log(`Comment Form error: ${err}`))
+      .catch(err => console.log(`Comment Form error: ${err}`));
   }
 
   render() {
+    const articleControlID = this.props.articleID;
+    //console.log(`controlID for comment is ${articleControlID}`)
     return (
       <Form className="mt-2" onSubmit={this.handleSubmit}>
         {/* attr name and value are use to set state */}
-        <Form.Group controlId="commentSender">
+        <Form.Group controlId={`sender${articleControlID}`}>
           <Form.Control
             type="text"
             placeholder="Name"
@@ -81,7 +69,7 @@ class CommentForm extends Component {
           />
         </Form.Group>
 
-        <Form.Group controlId="commentText">
+        <Form.Group controlId={`comment${articleControlID}`}>
           <Form.Control
             type="text"
             ref="text"

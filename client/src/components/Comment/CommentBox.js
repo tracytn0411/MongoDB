@@ -13,9 +13,8 @@ class CommentBox extends Component {
       authorInput: "",
       commentInput: "",
       comments: [],
-      count: ''
+      count: ""
     };
-    //this.submitComment = this.submitComment.bind(this);
     this.handleAuthorChange = this.handleAuthorChange.bind(this);
     this.handleCommentChange = this.handleCommentChange.bind(this);
     //this.handleCommentSubmit = this.handleCommentSubmit.bind(this);
@@ -34,7 +33,7 @@ class CommentBox extends Component {
       .get(`/api/getComments/` + articleID)
       .then(res => {
         console.log(res.data.count);
-        this.props.onCountComment(res.data.count)
+        this.props.onCountComment(res.data.count);
         this.setState({
           comments: res.data.comments,
           count: res.data.count
@@ -58,23 +57,29 @@ class CommentBox extends Component {
   //Props passed from CommentForm (child) to update state temporarily
   //The purpose is to display the new comment in CommentList w/o app refresh
   handleCommentSubmit(newComment) {
-    let comments = this.state.comments;
-    let newComments = comments.concat([newComment]);
+    const comments = this.state.comments;
+    const addComment = newComment.comment;
+    const updateComments = comments.concat([addComment]);
+    const updateCount = newComment.count;
+    this.props.onCountComment(updateCount);
     this.setState({
-      comments: newComments,
+      comments: updateComments,
+      count: updateCount,
       authorInput: "",
       commentInput: ""
     });
   }
 
-  handleDeleteComment(id) {
-    axios
-      .delete(`/api/delComment/${id}`)
-      .then(res => {
-        console.log(res.data);
-      })
-      .then(this.getComments())
-      .catch(err => console.log(`Delete commute error: ${err}`));
+  handleDeleteComment(deleteComment) {
+    var comments = this.state.comments;
+    var index = deleteComment.commentIndex;
+    comments.splice(index, 1); //remove comment from array according to its index
+    var updateCount = deleteComment.commentCount;
+    this.props.onCountComment(updateCount);
+    this.setState({
+      comments: comments,
+      count: updateCount
+    });
   }
   // submitComment(comment){
   //   console.log(comment)
