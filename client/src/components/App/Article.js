@@ -2,13 +2,18 @@ import React, { Component } from "react";
 import axios from "axios";
 import { Card, Button } from "react-bootstrap";
 import CollapseBtn from "./CollapseBtn";
+import socketIOClient from "socket.io-client";
+
 
 class Article extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      article: this.props.article
+      article: this.props.article,
+      endpoint: "localhost:5000"
+
     };
+
     this.handleToggleSave = this.handleToggleSave.bind(this);
   }
 
@@ -33,6 +38,8 @@ class Article extends Component {
             // then update button style by update the its react state
             article: res.data
           });
+          const socket = socketIOClient(this.state.endpoint);
+          socket.emit('article saved', this.state.article)
         });
     } else {
       //else -> unsave it

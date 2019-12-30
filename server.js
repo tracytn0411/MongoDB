@@ -21,8 +21,8 @@ var cheerio = require("cheerio");
 var app = express();
 
 //Dev for socket.io
-var server = require('http').createServer(app);
-var io = require('socket.io')(server); //pass server to socket.io
+const server = require('http').createServer(app);
+const io = require('socket.io')(server); //pass server to socket.io
 //require('events').defaultMaxListeners = 500
 
 // In Express, this lets you call newrelic from within a template.
@@ -65,18 +65,18 @@ db.once("open", function() {
 //Trial test with socket.io
 io.on("connection", (socket) => {
   console.log("a user connected")
-
-  socket.on('fromForm', function (data) {
-    console.log(colors.magenta(data));
-    //io.emit('fromServer', {data})
-  });
+  socket.on('article saved',(article) => {
+    const title = article.title
+    const notification = `Article ${title} has been saved!`
+    console.log (notification)
+    io.sockets.emit('article saved', (title))
+  })
   socket.on('disconnect', function(){
     console.log('user disconnected');
   });
 })
 
-
-
+//=========================ARTICLES=================//
 // Retrieve data from the db
 app.get("/api/articles", function(req, res) {
   // Find all results from the scrapedData collection in the db
@@ -90,7 +90,6 @@ app.get("/api/articles", function(req, res) {
       }
       // If there are no errors, send the data to the browser as json
       else {
-        //console.log(doc)
         res.json(doc);
       }
     });
@@ -112,7 +111,7 @@ app.get("/api/savedArticles", function(req, res) {
 app.post("/api/savedArticles", function(req, res) {
   Article.findOneAndUpdate(
     { _id: req.body.article_id },
-    { isSaved: true, btnStyle: "primary", btnText: "Saved!" },
+    { isSaved: true, btnStyle: "success", btnText: "Saved!" },
     function(error, articles) {
       if (error) {
         console.log(error);
@@ -173,7 +172,7 @@ app.get("/api/getComments/:id", (req, res) => {
       Comment.countDocuments({ article: req.params.id }, (err, count) => {
         if (err) console.log(colors.red(`count comments error: ${err}`));
         else {
-          console.log(`Number of comments: ${count}`.green);
+          //console.log(`Number of comments: ${count}`.green);
           res.json({
             comments: comments,
             count: count
@@ -199,7 +198,7 @@ app.post("/api/addComment", function(req, res) {
       Comment.countDocuments({ article: req.body.article_id }, (err, count) => {
         if (err) console.log(colors.red(`count comments error: ${err}`));
         else {
-          console.log(`Number of comments: ${count}`.green);
+          //console.log(`Number of comments: ${count}`.green);
           res.json({
             comment: comment,
             count: count
@@ -219,7 +218,7 @@ app.delete("/api/delComment/:id", (req, res) => {
       Comment.countDocuments({ article: articleID }, (err, count) => {
         if (err) console.log(colors.red(`count comments error: ${err}`));
         else {
-          console.log(`Number of comments: ${count}`.green);
+          //console.log(`Number of comments: ${count}`.green);
           res.json(count);
         }
       });
@@ -302,5 +301,5 @@ app.get("/api/scrape", function(req, res) {
   res.redirect("/");
 });
 
-//server.listen(PORT, () => console.log(`LISTENING ON PORT ${PORT}`));
-app.listen(PORT, () => console.log(`LISTENING ON PORT ${PORT}`));
+server.listen(PORT, () => console.log(`LISTENING ON PORT ${PORT}`)); //socket.io
+//app.listen(PORT, () => console.log(`LISTENING ON PORT ${PORT}`));
