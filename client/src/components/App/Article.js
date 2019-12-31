@@ -10,7 +10,8 @@ class Article extends Component {
     super(props);
     this.state = {
       article: this.props.article,
-      endpoint: "localhost:5000"
+      // endpoint: "localhost:5000"
+      endpoint:"/"
 
     };
 

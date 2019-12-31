@@ -4,12 +4,11 @@ import { Jumbotron, Toast, Container, Row, Col } from "react-bootstrap";
 
 import smashing from "../Images/smashing.png";
 import socketIOClient from "socket.io-client";
-
 const HeaderToast = () => {
   const [show, setShow] = useState(false);
   const [notification, setNotification] = useState("");
 
-  const socket = socketIOClient("localhost:5000");
+  const socket = socketIOClient("/");
   socket.on("article saved", notification => {
     setNotification(notification);
     setShow(true);

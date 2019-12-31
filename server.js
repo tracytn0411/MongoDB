@@ -19,15 +19,6 @@ var cheerio = require("cheerio");
 
 // Initialize Express
 var app = express();
-
-//Dev for socket.io
-const server = require('http').createServer(app);
-const io = require('socket.io')(server); //pass server to socket.io
-//require('events').defaultMaxListeners = 500
-
-// In Express, this lets you call newrelic from within a template.
-//app.locals.newrelic = newrelic;
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
@@ -36,10 +27,18 @@ app.use(methodOverride("_method"));
 //This tell express server where the frontend code is
 app.use(express.static(path.join(__dirname, "client/build")));
 
+
+// In Express, this lets you call newrelic from within a template.
+//app.locals.newrelic = newrelic;
+
 // Direct to homepage
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "client/build", "index.html"));
 });
+
+//Dev for socket.io
+const server = require('http').createServer(app);
+const io = require('socket.io')(server); //pass server to socket.io
 
 // Connect to MongoDB Atlas, database is web_scraper
 var dbURI = process.env.MONGODB_ATLAS_CLUSTER0_URI;
